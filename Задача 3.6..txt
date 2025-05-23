@@ -1,0 +1,107 @@
+#include <iostream>
+using namespace std;
+
+// === Клас вузла дерева ===
+template <typename T>
+class TreeNode {
+public:
+    T data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(T val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+// === Параметризований клас бінарного дерева ===
+template <typename T>
+class BinaryTree {
+private:
+    TreeNode<T>* root;
+
+    // Допоміжні рекурсивні методи
+    void insert(TreeNode<T>*& node, T val) {
+        if (!node) {
+            node = new TreeNode<T>(val);
+        } else if (val < node->data) {
+            insert(node->left, val);
+        } else {
+            insert(node->right, val);
+        }
+    }
+
+    void inOrder(TreeNode<T>* node) {
+        if (!node) return;
+        inOrder(node->left);
+        cout << node->data << " ";
+        inOrder(node->right);
+    }
+
+    void reverseOrder(TreeNode<T>* node) {
+        if (!node) return;
+        reverseOrder(node->right);
+        cout << node->data << " ";
+        reverseOrder(node->left);
+    }
+
+    bool search(TreeNode<T>* node, T val) {
+        if (!node) return false;
+        if (val == node->data) return true;
+        return val < node->data ? search(node->left, val) : search(node->right, val);
+    }
+
+    void destroy(TreeNode<T>* node) {
+        if (!node) return;
+        destroy(node->left);
+        destroy(node->right);
+        delete node;
+    }
+
+public:
+    BinaryTree() : root(nullptr) {}
+
+    ~BinaryTree() {
+        destroy(root);
+    }
+
+    void add(T val) {
+        insert(root, val);
+    }
+
+    void printInOrder() {
+        cout << "In-order (висхідний): ";
+        inOrder(root);
+        cout << endl;
+    }
+
+    void printReverseOrder() {
+        cout << "Reverse-order (спадний): ";
+        reverseOrder(root);
+        cout << endl;
+    }
+
+    bool find(T val) {
+        return search(root, val);
+    }
+};
+
+// === main ===
+int main() {
+    BinaryTree<int> tree;
+
+    tree.add(10);
+    tree.add(5);
+    tree.add(15);
+    tree.add(3);
+    tree.add(8);
+
+    tree.printInOrder();        // 3 5 8 10 15
+    tree.printReverseOrder();  // 15 10 8 5 3
+
+    int value = 8;
+    if (tree.find(value))
+        cout << "Значення " << value << " знайдено у дереві." << endl;
+    else
+        cout << "Значення " << value << " не знайдено у дереві." << endl;
+
+    return 0;
+}

@@ -1,0 +1,56 @@
+#include <iostream>
+#include <cstring> // для strcmp
+using namespace std;
+
+// === Загальні шаблони ===
+template <typename T>
+T findMin(T arr[], int size) {
+    T minVal = arr[0];
+    for (int i = 1; i < size; ++i)
+        if (arr[i] < minVal)
+            minVal = arr[i];
+    return minVal;
+}
+
+template <typename T>
+T findMax(T arr[], int size) {
+    T maxVal = arr[0];
+    for (int i = 1; i < size; ++i)
+        if (arr[i] > maxVal)
+            maxVal = arr[i];
+    return maxVal;
+}
+
+// === Спеціалізація для char* ===
+template <>
+char* findMin<char*>(char* arr[], int size) {
+    char* minVal = arr[0];
+    for (int i = 1; i < size; ++i)
+        if (strcmp(arr[i], minVal) < 0)
+            minVal = arr[i];
+    return minVal;
+}
+
+template <>
+char* findMax<char*>(char* arr[], int size) {
+    char* maxVal = arr[0];
+    for (int i = 1; i < size; ++i)
+        if (strcmp(arr[i], maxVal) > 0)
+            maxVal = arr[i];
+    return maxVal;
+}
+
+// === main ===
+int main() {
+    int a[] = {4, 2, 8, 1};
+    int n = 4;
+    cout << "Min (int): " << findMin(a, n) << endl;
+    cout << "Max (int): " << findMax(a, n) << endl;
+
+    char* strs[] = {"banana", "apple", "cherry"};
+    int m = 3;
+    cout << "Min (char*): " << findMin(strs, m) << endl;
+    cout << "Max (char*): " << findMax(strs, m) << endl;
+
+    return 0;
+}

@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+// === Шаблон класу List ===
+template <typename T>
+class List {
+private:
+    // Внутрішній вузол списку
+    struct Node {
+        T data;
+        Node* next;
+        Node(T val) : data(val), next(nullptr) {}
+    };
+
+    Node* head;
+    Node* tail;
+
+public:
+    List() : head(nullptr), tail(nullptr) {}
+    ~List() {
+        Node* current = head;
+        while (current) {
+            Node* tmp = current;
+            current = current->next;
+            delete tmp;
+        }
+    }
+
+    // Додати елемент у кінець списку
+    void push_back(T val) {
+        Node* newNode = new Node(val);
+        if (!head)
+            head = tail = newNode;
+        else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    // === Внутрішній клас ітератора ===
+    class Iterator {
+    private:
+        Node* current;
+    public:
+        Iterator(Node* ptr) : current(ptr) {}
+
+        T& operator*() { return current->data; }
+
+        Iterator& operator++() {
+            if (current) current = current->next;
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return current != other.current;
+        }
+
+        bool operator==(const Iterator& other) const {
+            return current == other.current;
+        }
+    };
+
+    // Повертає ітератори
+    Iterator begin() { return Iterator(head); }
+    Iterator end() { return Iterator(nullptr); }
+};
+
+// === main ===
+int main() {
+    List<int> myList;
+
+    myList.push_back(10);
+    myList.push_back(20);
+    myList.push_back(30);
+
+    cout << "Елементи списку: ";
+    for (auto it = myList.begin(); it != myList.end(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
+    return 0;
+}

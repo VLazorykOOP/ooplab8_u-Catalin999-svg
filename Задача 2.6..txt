@@ -1,0 +1,60 @@
+#include <iostream>
+#include <cstring>      // для strcmp
+#include <algorithm>    // для sort
+using namespace std;
+
+// === Загальний шаблон функції об’єднання та сортування ===
+template <typename T>
+T* mergeAndSort(T* arr1, int size1, T* arr2, int size2) {
+    int totalSize = size1 + size2;
+    T* result = new T[totalSize];
+    for (int i = 0; i < size1; ++i) result[i] = arr1[i];
+    for (int i = 0; i < size2; ++i) result[size1 + i] = arr2[i];
+
+    sort(result, result + totalSize);
+    return result;
+}
+
+// === Спеціалізація для char* ===
+template <>
+char** mergeAndSort<char*>(char** arr1, int size1, char** arr2, int size2) {
+    int totalSize = size1 + size2;
+    char** result = new char*[totalSize];
+    for (int i = 0; i < size1; ++i) result[i] = arr1[i];
+    for (int i = 0; i < size2; ++i) result[size1 + i] = arr2[i];
+
+    sort(result, result + totalSize, [](const char* a, const char* b) {
+        return strcmp(a, b) < 0;
+    });
+
+    return result;
+}
+
+// === Функція виводу масиву будь-якого типу ===
+template <typename T>
+void printArray(T* arr, int size) {
+    for (int i = 0; i < size; ++i)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+// === main ===
+int main() {
+    //  Тест із int
+    int a[] = {5, 1, 3};
+    int b[] = {4, 2};
+    int* resInt = mergeAndSort(a, 3, b, 2);
+    cout << "Об’єднаний масив int: ";
+    printArray(resInt, 5);
+    delete[] resInt;
+
+    //  Тест із char*
+    char* arr1[] = {"banana", "apple"};
+    char* arr2[] = {"cherry", "date"};
+    char** resChar = mergeAndSort(arr1, 2, arr2, 2);
+    cout << "Об’єднаний масив char*: ";
+    printArray(resChar, 4);
+    delete[] resChar;
+
+    return 0;
+}
